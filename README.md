@@ -25,7 +25,7 @@ The **Data Analysis Foundation Journey** is focused on bridging the gap between 
 * Wrote basic python codes, Understood python and took it to minor python projects.
 * Check the `Day-1` folder for all codes and annotated note along with projects.
 
-### From Day 2 Onward
+### Day 2 Onward
 
 * Dived into Python fundamentals and advanced topics.
 * Performed CRUD operations with SQLite/MySQL using Python.
