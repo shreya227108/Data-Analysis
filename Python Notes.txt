@@ -1,0 +1,350 @@
+*******
+python-
+
+*******
+founder- Guido van Rossum-1991
+
+Definition-
+1.open source(no need permission or payment)
+2.platform independent(run on all the OS)
+3.oops(reusing the code)-6 pillars
+	-classes/blueprint
+	-inheritance(one class can access the properties of another class)
+	-Encapsulation(wrapping large data-provide privacy and protection)
+	-Abstraction (only necessary part is visible)
+	-polymorphism (same name can have different functions working)
+4.interpreted(line by line execution/slower than compiler/better than compiler)
+5.dynamically type(no need to define the datatype while declaring variable/no need to give conditions in for loops)
+6.general purpose(versatile use/application dev/website dev/data analysis)
+7.lightwaight(less memory consumer)
+
+*datatypes-
+1.numbers/single valued- int float
+
+2.sequence/multicollection datatype- list, tuple, range, set, 
+@list
+-it is a multicollection datatype
+-it can store multiple values in single variable with different data types
+-it allows duplicate values
+-it support to positive and negative index
+-it is mutable
+-index starts form 0
+-defined as[],each element is separated by comma
+   
+@Tupple
+-it is also multicollection datatype which can save multiple values in single variable         with the different data types
+-it allows duplicate value
+-it is immutable
+-it is a sequence data type(order data type)
+-it support index value
+-can't add extra value in tuple but can add two diff. tuples
+
+@Range
+-
+
+
+3.mapping- dictionary
+@Dictionary
+-Multicollection data type which store data in key and value pair.
+-value can be duplicate but key can't be.(if happens then it will be overrided)
+-we access value by key
+-it is an sequence data type(order data type)
+-define dictionary with {}
+-each pair is separated by comma.
+-can change the values of dictionary
+
+4.set
+-it is an unordered multicollection data types
+-it is not allows the duplicates
+-to define the set we use {}
+
+5.character- string
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*memory management-
+ROM- software or all the stuff are saved permanently)
+RAM- space is provided to run any application or execute any function on pc
+some part of RAM is give to python memory. This memory id divided in two parts- stack and heap. stack saves variables( ex. a, b, num, i) and heap will save the value of variable( Ex.2,4,5).while saving each value in heap it gets specific id. Through this id variable from stack gets reference from heap. If two variables have same value then they get the same id reference.
+
+[
+reverse without using reverse-
+syntax-
+variable[start: end: step]
+
+Ex.
+
+data = "My name is shreya"
+print(data[::-1])
+]
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*conditions-
+syntax-
+1.
+if condition:
+	expression
+else:
+	expression
+
+2.
+if condition:
+	expression
+elif condition:
+	expression
+else:
+	expression
+
+
+*Loops-
+1.while loop-
+syntax-
+while condition:
+	expression
+	increment
+
+2.for loop-
+syntax
+for variable in range(start, end, step):
+	expression
+
+
+*membership operators-
+in(if element is in the list condition is true)
+Not in(if element is not in the list condition is true)
+
+user input-
+u1 = input("Enter the name:")
+print(u1)
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*function-
+function is a block of code write once an use it multiple times is an block of code
+
+syntax to define a function-
+def name():
+	expression  
+
+
+types of function-
+1.simple function
+
+2.function with parameter/position argument-(the order of passing values should be same as the parameters value)[i.e.(name, age, city)=("Shreya",20,"Solapur")
+
+
+3.function with keyword argument-(order of passing value can be different form the order of parameters but have to mention the parameter while passing the values)
+[i.e. (name, age, city)=(age=20, name="Shreya", city="Solapur")]
+
+
+4.Default parameter function(If you won't pass any value then default value will be passed and if you pass a value the it will override)
+[i.e. (name, age, city="Solapur") = ("Shreya",20,"Kolhapur")]
+
+
+5.arbitratory function/variable length function-
+a. Non-keyword variable length function(a function that can accept an arbitrary number of arguments. It is defined as *args. This function store the value into a tuple.)
+
+b. keyword argument variable length function(a function to accept any number of named (keyword) arguments. It is defined as **args. This function stored the value as a dictionary.)
+
+
+6.lambda function/anonymous function(It can take multiple arguments but only contain a single expression. It is a smaller function which is used  in other function. return is default no need to return anything)
+(syntax- ( a= lambda arguments : expressions))
+[i.e. ( a=lambda a,b : a+b )]
+
+
+7.recursion function(a function that calls itself directly or indirectly to solve a problem. base condition is defined to stop the recursion and  function calls itself with modified arguments to gradually reach the base case)
+def factorial(n):
+    if n == 0:  # Base case
+        return 1
+    return n * factorial(n - 1)  # Recursive call
+
+print(factorial(5))  # Output: 120
+
+
+8.generator function(This is a memory efficient function as it does not saves all the values of iterations in memory. It returns the value and pause and when needed it is resumed to return next value. It uses yield instead of return keyword.
+def abc():
+    yield 12
+    yield 13
+    yield "aa"
+a=abc()
+print(next(a))
+print(next(a))
+print(next(a))
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*class-
+A class in Python is a blueprint for creating objects. It defines properties (attributes) and behaviors (methods) that the objects created from the class will have.
+
+attribute = parameter
+function=methods
+ syntax-
+class first:
+	expression
+
+
+*methods-
+A method in a class is a function that belongs to the class and operates on its objects. Methods can be categorized based on how they interact with the class and its objects.
+
+Types of methods-
+
+1.instance method-(can't access without creating object, self is passed as argument.)
+
+2.class method (can access without creating object)(@clasmethod)( It is a method that operates on the class itself rather than on an instance of the class. It is defined using the @classmethod decorator and takes cls as its first parameter instead of self.)
+
+3.static method(work for particular function only, used to provide security or limitation to variable declared in a function, without creating obj can be called, no need to pass instances(self, cls),if you pass it will work as argument, cant use parameters of another function)
+
+4.Special (Dunder) Methods(predefined methods which start and end with double underscore, Customize object behavior (__init__, __str__, etc.).)
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*Inheritance
+Inheritance is a fundamental concept in object-oriented programming (OOP) that allows a class (child class) to inherit attributes and methods from another class (parent class). This helps in code reusability and hierarchical structuring.
+(In inheritance only inherited class's obj is created, the parent class is automatically created)
+
+types of inheritance-
+1.single level inheritance-
+(parent-child)(child is inherited from parent)
+ex:
+	class parent(self):
+		expression
+	class child(parent):
+		expression
+	obj=child()
+
+
+2.multilevel inheritance(parent-child-grandchild-......../between more than two classes)
+ex:
+	class grand(self):
+		expression
+	class parent(grand):
+		expression
+	class child(parent):
+		expression
+	obj=child()
+
+
+3.multiple inheritance(a and b not connected to each other but c inherits both a and b)(one child is inherited from more than one parent class)
+ex:
+	class parent1(self):
+		expression
+	class parent2(self):
+		expression
+	class Child(parent1,parent2):
+		expression
+	obj=child()
+
+
+4.hierarchy inheritance(Multiple classes are inherited from one class)(fy sy ty all inherits from college class)
+ex:
+	class parent(self):
+		expression
+	class child1(parent):
+		expression
+	class child2(parent):
+		expression
+	obj=child1()
+	obj=child2()
+
+
+5.hybrid inheritance(combination of any multiple types of inheritances)
+ex:
+	class A:
+		expression
+	class b(A):
+		expression
+	class c(A):
+		expression
+	class d(b, c):
+		expression
+	obj=d()
+
+
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+*Encapsulation-(Access specifier)
+private and protected and public
+It refers to the concept of restricting direct access to certain details of an object and only allowing controlled interaction through methods.
+
+-private variable can't be accessed outside of the class, is defined by writing double '__' before the variable.
+Ex. __amt
+
+-public variable can be accessed anywhere in code in another class also. It is defined just like normal variables
+Ex. amt
+
+-protected variable can be accessed outside of class but it should not be accessed. It is defined by applying '_' before variable name. 
+Ex. _amt
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*Polymorphism
+It allows the same interface to be used for different data types. In simple terms, polymorphism allows objects of different classes to be treated as objects of a common superclass.
+
+Types of polymorphism-
+
+-Method Overriding
+When a child class provides its own implementation of a method inherited from the parent class.(A method is written again and its properties are changed)
+
+-Method Overloading (Not directly supported in Python)
+Method overloading allows multiple methods in the same class to have the same name but different parameters.
+(operator overloading using magic method, these are inbuild methods Ex. __add__, __truediv__)
+
+-Operator Overloading
+Python allows us to overload operators, meaning we can define custom behaviors for operators like +, -, *, etc.
+
+
+-Polymorphism with Functions and Objects
+A function can accept objects of different classes as long as they have the same method.
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+*Abstraction
+It hides implementation details and only exposes the essential features of an object. This helps in reducing complexity and increasing code reusability.
+
+
+
+*Error-
+compile error()
+runtime error(logic mistake, Ex. 1/0)
+syntax error(mistake in syntax)
+____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+*exception handling-
+syntax-
+
+try:
+    main logic of application
+except:
+    error raised or found in try block
+
+*file handling
+r- is used to read the file
+x- is used to create a file
+w- is used to write a data in a file 
+a- is used to append data into file, also create a file 
+open- it is use to open the file for operations 
+close- it is used to close the file operation
+read-used to read the file
+readline-used to read the single line
+realines- used to read multiple lines
+
+package-collection of modules
+module-collection of all the coding data
+
+to check the libraries installed-
+pip freeze
+
+to install the modules-
+pip install virtualenv
+
+to give name to the module-
+python -m venv myenv
+
+
+to activate the  modules-
+.\myenv\Scripts\activate
+
+

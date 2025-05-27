@@ -1,0 +1,1194 @@
+Microsoft Windows [Version 10.0.22631.4890]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 8.0>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 22
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| shreya             |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use shreya;
+Database changed
+mysql> show tables;
++------------------+
+| Tables_in_shreya |
++------------------+
+| cart             |
+| productt         |
+| userr            |
++------------------+
+3 rows in set (0.02 sec)
+
+mysql> create table payment(payid int primary key auto_increment,amount float,pid int, uid int,foreign key(pid) references productt(pid), foreign key(uid) references userr(uid));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table shaddress(aid int primary key auto_increment,full_address varchar(255),uid int, foreign key(uid));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+mysql> create table shaddress(aid int primary key auto_increment,full_address varchar(255),uid int, foreign key(uid) references userr(uid));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table order12(oid int primary key auto_increment,payid int, pid int, uid int, aid int, foreign key(payid) references payment(payid), foreign key(pid) references productt(pid), foreign key(uid) references userr(uid), foreign key(aid) references shaddress(aid));
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> desc userr;
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| uid   | int          | NO   | PRI | NULL    | auto_increment |
+| uname | varchar(200) | YES  |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+2 rows in set (0.01 sec)
+
+mysql> desc productt;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| pid    | int          | NO   | PRI | NULL    | auto_increment |
+| pname  | varchar(200) | YES  |     | NULL    |                |
+| pprice | float        | YES  |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> desc cart;
++-------+------+------+-----+---------+----------------+
+| Field | Type | Null | Key | Default | Extra          |
++-------+------+------+-----+---------+----------------+
+| cid   | int  | NO   | PRI | NULL    | auto_increment |
+| pid   | int  | YES  | MUL | NULL    |                |
+| uid   | int  | YES  | MUL | NULL    |                |
++-------+------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> desc payment;
++--------+-------+------+-----+---------+----------------+
+| Field  | Type  | Null | Key | Default | Extra          |
++--------+-------+------+-----+---------+----------------+
+| payid  | int   | NO   | PRI | NULL    | auto_increment |
+| amount | float | YES  |     | NULL    |                |
+| pid    | int   | YES  | MUL | NULL    |                |
+| uid    | int   | YES  | MUL | NULL    |                |
++--------+-------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> desc shaddress;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| aid          | int          | NO   | PRI | NULL    | auto_increment |
+| full_address | varchar(255) | YES  |     | NULL    |                |
+| uid          | int          | YES  | MUL | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> desc order12;
++-------+------+------+-----+---------+----------------+
+| Field | Type | Null | Key | Default | Extra          |
++-------+------+------+-----+---------+----------------+
+| oid   | int  | NO   | PRI | NULL    | auto_increment |
+| payid | int  | YES  | MUL | NULL    |                |
+| pid   | int  | YES  | MUL | NULL    |                |
+| uid   | int  | YES  | MUL | NULL    |                |
+| aid   | int  | YES  | MUL | NULL    |                |
++-------+------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into userr values(400,'user1'),(401,'user2'),(402,'user3'),(40
+3,'user4');
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into productt values(1,'laptop',66000),(2,'iphone16',125000),(3,'head phone',2000),(4,'canon-camera',100000);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into cart values(201,3,402);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from cart;
++-----+------+------+
+| cid | pid  | uid  |
++-----+------+------+
+| 201 |    3 |  402 |
++-----+------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from userr inner join cart on userr.uid = cart.uid;
++-----+-------+-----+------+------+
+| uid | uname | cid | pid  | uid  |
++-----+-------+-----+------+------+
+| 402 | user3 | 201 |    3 |  402 |
++-----+-------+-----+------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from userr inner join cart on userr.uid = cart.uid inner join productt on cart.pid = productt.pid;
++-----+-------+-----+------+------+-----+------------+--------+
+| uid | uname | cid | pid  | uid  | pid | pname      | pprice |
++-----+-------+-----+------+------+-----+------------+--------+
+| 402 | user3 | 201 |    3 |  402 |   3 | head phone |   2000 |
++-----+-------+-----+------+------+-----+------------+--------+
+1 row in set (0.00 sec)
+
+mysql> select userr.uid, userr.uname,productt.pname,productt.pprice from userr inner join cart  on userr.uid = cart.uid inner join productt on cart.pid = productt.pid;
++-----+-------+------------+--------+
+| uid | uname | pname      | pprice |
++-----+-------+------------+--------+
+| 402 | user3 | head phone |   2000 |
++-----+-------+------------+--------+
+1 row in set (0.00 sec)
+
+mysql> desc shaddress;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| aid          | int          | NO   | PRI | NULL    | auto_increment |
+| full_address | varchar(255) | YES  |     | NULL    |                |
+| uid          | int          | YES  | MUL | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into shaddress values(501,'wit solapur',401);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> desc payment;
++--------+-------+------+-----+---------+----------------+
+| Field  | Type  | Null | Key | Default | Extra          |
++--------+-------+------+-----+---------+----------------+
+| payid  | int   | NO   | PRI | NULL    | auto_increment |
+| amount | float | YES  |     | NULL    |                |
+| pid    | int   | YES  | MUL | NULL    |                |
+| uid    | int   | YES  | MUL | NULL    |                |
++--------+-------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> insert into payment values(901,66500,1,401);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> desc order12;
++-------+------+------+-----+---------+----------------+
+| Field | Type | Null | Key | Default | Extra          |
++-------+------+------+-----+---------+----------------+
+| oid   | int  | NO   | PRI | NULL    | auto_increment |
+| payid | int  | YES  | MUL | NULL    |                |
+| pid   | int  | YES  | MUL | NULL    |                |
+| uid   | int  | YES  | MUL | NULL    |                |
+| aid   | int  | YES  | MUL | NULL    |                |
++-------+------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into order12 values(301,901,1,401,501);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from userr inner join payment on userr.uid = payment.uid;
++-----+-------+-------+--------+------+------+
+| uid | uname | payid | amount | pid  | uid  |
++-----+-------+-------+--------+------+------+
+| 401 | user2 |   901 |  66500 |    1 |  401 |
++-----+-------+-------+--------+------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from userr inner join payment on userr.uid = payment.uid inn
+er join productt on productt.pid = payment.pid;
++-----+-------+-------+--------+------+------+-----+--------+--------+
+| uid | uname | payid | amount | pid  | uid  | pid | pname  | pprice |
++-----+-------+-------+--------+------+------+-----+--------+--------+
+| 401 | user2 |   901 |  66500 |    1 |  401 |   1 | laptop |  66000 |
++-----+-------+-------+--------+------+------+-----+--------+--------+
+1 row in set (0.00 sec)
+
+mysql> select * from userr inner join payment on userr.uid = payment.uid inner join productt on productt.pid = payment.pid inner join order12 on order12.payid = payment.payid;
++-----+-------+-------+--------+------+------+-----+--------+--------+-----+-------+------+------+------+
+| uid | uname | payid | amount | pid  | uid  | pid | pname  | pprice | oid | payid | pid  | uid  | aid  |
++-----+-------+-------+--------+------+------+-----+--------+--------+-----+-------+------+------+------+
+| 401 | user2 |   901 |  66500 |    1 |  401 |   1 | laptop |  66000 | 301 |   901 |    1 |  401 |  501 |
++-----+-------+-------+--------+------+------+-----+--------+--------+-----+-------+------+------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from userr inner join payment on userr.uid = payment.uid inner join productt on productt.pid = payment.pid inner join order12 on order12.payid = payment.payid inner join shaddress on shaddress.aid=order12.aid;
++-----+-------+-------+--------+------+------+-----+--------+--------+-----+-------+------+------+------+-----+--------------+------+
+| uid | uname | payid | amount | pid  | uid  | pid | pname  | pprice | oid | payid | pid  | uid  | aid  | aid | full_address | uid  |
++-----+-------+-------+--------+------+------+-----+--------+--------+-----+-------+------+------+------+-----+--------------+------+
+| 401 | user2 |   901 |  66500 |    1 |  401 |   1 | laptop |  66000 | 301 |   901 |    1 |  401 |  501 | 501 | wit solapur  |  401 |
++-----+-------+-------+--------+------+------+-----+--------+--------+-----+-------+------+------+------+-----+--------------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from userr cross join product;
+ERROR 1146 (42S02): Table 'shreya.product' doesn't exist
+mysql> select * from user;
+ERROR 1146 (42S02): Table 'shreya.user' doesn't exist
+mysql> select * from userr;
++-----+-------+
+| uid | uname |
++-----+-------+
+| 400 | user1 |
+| 401 | user2 |
+| 402 | user3 |
+| 403 | user4 |
++-----+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from productt;
++-----+--------------+--------+
+| pid | pname        | pprice |
++-----+--------------+--------+
+|   1 | laptop       |  66000 |
+|   2 | iphone16     | 125000 |
+|   3 | head phone   |   2000 |
+|   4 | canon-camera | 100000 |
++-----+--------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from user cross join product;
+ERROR 1146 (42S02): Table 'shreya.user' doesn't exist
+mysql> select * from userr cross join productt;
++-----+-------+-----+--------------+--------+
+| uid | uname | pid | pname        | pprice |
++-----+-------+-----+--------------+--------+
+| 403 | user4 |   1 | laptop       |  66000 |
+| 402 | user3 |   1 | laptop       |  66000 |
+| 401 | user2 |   1 | laptop       |  66000 |
+| 400 | user1 |   1 | laptop       |  66000 |
+| 403 | user4 |   2 | iphone16     | 125000 |
+| 402 | user3 |   2 | iphone16     | 125000 |
+| 401 | user2 |   2 | iphone16     | 125000 |
+| 400 | user1 |   2 | iphone16     | 125000 |
+| 403 | user4 |   3 | head phone   |   2000 |
+| 402 | user3 |   3 | head phone   |   2000 |
+| 401 | user2 |   3 | head phone   |   2000 |
+| 400 | user1 |   3 | head phone   |   2000 |
+| 403 | user4 |   4 | canon-camera | 100000 |
+| 402 | user3 |   4 | canon-camera | 100000 |
+| 401 | user2 |   4 | canon-camera | 100000 |
+| 400 | user1 |   4 | canon-camera | 100000 |
++-----+-------+-----+--------------+--------+
+16 rows in set (0.00 sec)
+
+mysql> create table employee;
+ERROR 4028 (HY000): A table must have at least one visible column.
+mysql> create table employee(EmpId primary key,empName varchar(50),designation varchar(100),bossId int);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'primary key,empName varchar(50),designation varchar(100),bossId int)' at line 1
+mysql> create table employee(EmpId int primary key,empName varchar(50),designation varchar(100),bossId int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from employee;
+Empty set (0.00 sec)
+
+mysql> desc employee;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| EmpId       | int          | NO   | PRI | NULL    |       |
+| empName     | varchar(50)  | YES  |     | NULL    |       |
+| designation | varchar(100) | YES  |     | NULL    |       |
+| bossId      | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> MariaDB [mysql]> insert into employee values(1,'spidy','dev',6),(2,'lucy','dev',6),(3,'mark','dev',6),(4,'john','dev',6),(5,'bandya','tester',8),(6,'sonu','d-manager',9),(7,'jenny','tester',8),(8,'lobo','t-manager',9),(9,'akshay','CEO',null);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'MariaDB [mysql]> insert into employee values(1,'spidy','dev',6),(2,'lucy','dev',' at line 1
+mysql> insert into employee values(1,'spidy','dev',6),(2,'lucy','dev',6),(3,'mark','dev',6),(4,'john','dev',6),(5,'bandya','tester',8),(6,'sonu','d-manager',9),(7,'jenny','tester',8),(8,'lobo','t-manager',9),(9,'akshay','CEO',null);
+Query OK, 9 rows affected (0.01 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> show * from employee;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '* from employee' at line 1
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | spidy   | dev         |      6 |
+|     2 | lucy    | dev         |      6 |
+|     3 | mark    | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select a.empname,b.empname from employee as a,employee as b where a.EmpId=b.EmpId;
++---------+---------+
+| empname | empname |
++---------+---------+
+| spidy   | spidy   |
+| lucy    | lucy    |
+| mark    | mark    |
+| john    | john    |
+| bandya  | bandya  |
+| sonu    | sonu    |
+| jenny   | jenny   |
+| lobo    | lobo    |
+| akshay  | akshay  |
++---------+---------+
+9 rows in set (0.00 sec)
+
+mysql> select a.empname ass employee,b.empname as manager from employee as a,employee as b where a.EmpId=b.EmpId;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'employee,b.empname as manager from employee as a,employee as b where a.EmpId=b.E' at line 1
+mysql> select a.empname ass employee,b.empname as t-manager from employee as a,employee as b where a.EmpId=b.EmpId;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'employee,b.empname as t-manager from employee as a,employee as b where a.EmpId=b' at line 1
+mysql> select a.empname as employee,b.empname as t-manager from employee as a,employee as b where a.EmpId=b.EmpId;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-manager from employee as a,employee as b where a.EmpId=b.EmpId' at line 1
+mysql> create table teacher(id int primary key,name varchar(20),tid int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc table teacher;
++----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table   | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | teacher | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> desc teacher;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| id    | int         | NO   | PRI | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
+| tid   | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into teacher values(1,'physics',4),(2,'chemistry',5),(3,'enlgish',5),(4,'xyz',null),(5,'abc',null);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from teacher;
++----+-----------+------+
+| id | name      | tid  |
++----+-----------+------+
+|  1 | physics   |    4 |
+|  2 | chemistry |    5 |
+|  3 | enlgish   |    5 |
+|  4 | xyz       | NULL |
+|  5 | abc       | NULL |
++----+-----------+------+
+5 rows in set (0.00 sec)
+
+mysql> select a.name as subject_name,b.name as teacher from teacher as a,teacher as b where a.tid=b.id;
++--------------+---------+
+| subject_name | teacher |
++--------------+---------+
+| physics      | xyz     |
+| chemistry    | abc     |
+| enlgish      | abc     |
++--------------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | spidy   | dev         |      6 |
+|     2 | lucy    | dev         |      6 |
+|     3 | mark    | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select * from employee natural join teacher;
++-------+---------+-------------+--------+----+-----------+------+
+| EmpId | empName | designation | bossId | id | name      | tid  |
++-------+---------+-------------+--------+----+-----------+------+
+|     1 | spidy   | dev         |      6 |  5 | abc       | NULL |
+|     1 | spidy   | dev         |      6 |  4 | xyz       | NULL |
+|     1 | spidy   | dev         |      6 |  3 | enlgish   |    5 |
+|     1 | spidy   | dev         |      6 |  2 | chemistry |    5 |
+|     1 | spidy   | dev         |      6 |  1 | physics   |    4 |
+|     2 | lucy    | dev         |      6 |  5 | abc       | NULL |
+|     2 | lucy    | dev         |      6 |  4 | xyz       | NULL |
+|     2 | lucy    | dev         |      6 |  3 | enlgish   |    5 |
+|     2 | lucy    | dev         |      6 |  2 | chemistry |    5 |
+|     2 | lucy    | dev         |      6 |  1 | physics   |    4 |
+|     3 | mark    | dev         |      6 |  5 | abc       | NULL |
+|     3 | mark    | dev         |      6 |  4 | xyz       | NULL |
+|     3 | mark    | dev         |      6 |  3 | enlgish   |    5 |
+|     3 | mark    | dev         |      6 |  2 | chemistry |    5 |
+|     3 | mark    | dev         |      6 |  1 | physics   |    4 |
+|     4 | john    | dev         |      6 |  5 | abc       | NULL |
+|     4 | john    | dev         |      6 |  4 | xyz       | NULL |
+|     4 | john    | dev         |      6 |  3 | enlgish   |    5 |
+|     4 | john    | dev         |      6 |  2 | chemistry |    5 |
+|     4 | john    | dev         |      6 |  1 | physics   |    4 |
+|     5 | bandya  | tester      |      8 |  5 | abc       | NULL |
+|     5 | bandya  | tester      |      8 |  4 | xyz       | NULL |
+|     5 | bandya  | tester      |      8 |  3 | enlgish   |    5 |
+|     5 | bandya  | tester      |      8 |  2 | chemistry |    5 |
+|     5 | bandya  | tester      |      8 |  1 | physics   |    4 |
+|     6 | sonu    | d-manager   |      9 |  5 | abc       | NULL |
+|     6 | sonu    | d-manager   |      9 |  4 | xyz       | NULL |
+|     6 | sonu    | d-manager   |      9 |  3 | enlgish   |    5 |
+|     6 | sonu    | d-manager   |      9 |  2 | chemistry |    5 |
+|     6 | sonu    | d-manager   |      9 |  1 | physics   |    4 |
+|     7 | jenny   | tester      |      8 |  5 | abc       | NULL |
+|     7 | jenny   | tester      |      8 |  4 | xyz       | NULL |
+|     7 | jenny   | tester      |      8 |  3 | enlgish   |    5 |
+|     7 | jenny   | tester      |      8 |  2 | chemistry |    5 |
+|     7 | jenny   | tester      |      8 |  1 | physics   |    4 |
+|     8 | lobo    | t-manager   |      9 |  5 | abc       | NULL |
+|     8 | lobo    | t-manager   |      9 |  4 | xyz       | NULL |
+|     8 | lobo    | t-manager   |      9 |  3 | enlgish   |    5 |
+|     8 | lobo    | t-manager   |      9 |  2 | chemistry |    5 |
+|     8 | lobo    | t-manager   |      9 |  1 | physics   |    4 |
+|     9 | akshay  | CEO         |   NULL |  5 | abc       | NULL |
+|     9 | akshay  | CEO         |   NULL |  4 | xyz       | NULL |
+|     9 | akshay  | CEO         |   NULL |  3 | enlgish   |    5 |
+|     9 | akshay  | CEO         |   NULL |  2 | chemistry |    5 |
+|     9 | akshay  | CEO         |   NULL |  1 | physics   |    4 |
++-------+---------+-------------+--------+----+-----------+------+
+45 rows in set (0.01 sec)
+
+mysql> create user 'user12'@'localhost' identified by 'user12';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> quit
+Bye
+
+C:\Program Files\MySQL\MySQL Server 8.0>mysql -u user12 -p
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 23
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use shreya;
+ERROR 1044 (42000): Access denied for user 'user12'@'localhost' to database 'shreya'
+mysql> mysql -u root -p
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'mysql -u root -p' at line 1
+mysql> use shreya;
+ERROR 1044 (42000): Access denied for user 'user12'@'localhost' to database 'shreya'
+mysql> quit
+Bye
+
+C:\Program Files\MySQL\MySQL Server 8.0>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 24
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use shreya;
+Database changed
+mysql> grant select on shreya.employee to 'user12'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> quit
+Bye
+
+C:\Program Files\MySQL\MySQL Server 8.0>mysql -u user12 -p
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 25
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use shreya;
+Database changed
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
+| shreya             |
++--------------------+
+3 rows in set (0.00 sec)
+
+mysql> show tables;
++------------------+
+| Tables_in_shreya |
++------------------+
+| employee         |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> delete from employee where EmpId=1;
+ERROR 1142 (42000): DELETE command denied to user 'user12'@'localhost' for table 'employee'
+mysql> delete from employee where EmpId=1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     2 | lucy    | dev         |      6 |
+|     3 | mark    | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+8 rows in set (0.00 sec)
+
+mysql> use shreya
+ERROR 1044 (42000): Access denied for user 'user12'@'localhost' to database 'shreya'
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
++--------------------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Microsoft Windows [Version 10.0.22631.4890]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 26
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> grant select ,delete on shreya.employee to 'user12'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> use shreya;
+Database changed
+mysql> revoke select,delete on shreya.* from 'user12'@'localhost';
+ERROR 1141 (42000): There is no such grant defined for user 'user12' on host 'localhost'
+mysql> revoke select,delete on shreya.employee from 'user12'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Microsoft Windows [Version 10.0.22631.4890]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 26
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> grant select ,delete on shreya.employee to 'user12'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> use shreya;
+Database changed
+mysql> revoke select,delete on shreya.* from 'user12'@'localhost';
+ERROR 1141 (42000): There is no such grant defined for user 'user12' on host 'localhost'
+mysql> revoke select,delete on shreya.employee from 'user12'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from employee where EmpId in (2,3);
+Query OK, 2 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+6 rows in set (0.00 sec)
+
+mysql> rollback
+    -> ;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     2 | lucy    | dev         |      6 |
+|     3 | mark    | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+8 rows in set (0.00 sec)
+
+mysql> delete from employee where EmpId in (2,3);
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+6 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+6 rows in set (0.00 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into employee values(1,'abc','dev',6);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> savepoint a;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | abc     | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+7 rows in set (0.00 sec)
+
+mysql> insert into employee values(2,'pqr','dev',6);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> savepoint b;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into employee values(3,'abc','dev',6);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | abc     | dev         |      6 |
+|     2 | pqr     | dev         |      6 |
+|     3 | abc     | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> savepoint c;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> rollback c;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'c' at line 1
+mysql> rollback to savepoint c;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | abc     | dev         |      6 |
+|     2 | pqr     | dev         |      6 |
+|     3 | abc     | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> rollback to savepoint b;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | abc     | dev         |      6 |
+|     2 | pqr     | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+8 rows in set (0.00 sec)
+
+mysql> rollback to savepoint a;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | abc     | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+7 rows in set (0.00 sec)
+
+mysql> rollback to savepoint c;
+ERROR 1305 (42000): SAVEPOINT c does not exist
+mysql> rollback to savepoint b;
+ERROR 1305 (42000): SAVEPOINT b does not exist
+mysql> rollback to savepoint a;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
++-------+---------+-------------+--------+
+| EmpId | empName | designation | bossId |
++-------+---------+-------------+--------+
+|     1 | abc     | dev         |      6 |
+|     4 | john    | dev         |      6 |
+|     5 | bandya  | tester      |      8 |
+|     6 | sonu    | d-manager   |      9 |
+|     7 | jenny   | tester      |      8 |
+|     8 | lobo    | t-manager   |      9 |
+|     9 | akshay  | CEO         |   NULL |
++-------+---------+-------------+--------+
+7 rows in set (0.00 sec)
+
+mysql>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mysql> create table worker(id int primary key,name varchar(20),designation v
+archar(20),salary int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc worker;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| id          | int         | NO   | PRI | NULL    |       |
+| name        | varchar(20) | YES  |     | NULL    |       |
+| designation | varchar(20) | YES  |     | NULL    |       |
+| salary      | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert int worker values(1,'rahul','dev',40000),(2,'bhai','tester',50
+000),^C
+mysql> insert into worker values(1,'rahul','dev',40000),,(2,'bhai','tester',
+50000),(3,'rohit','d-manager',55000),(4,'anjali','tester',62000),(5,'tom','t-manager',70000);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',(2,'bhai','tester',50000),(3,'rohit','d-manager',55000),(4,'anjali','tester',62' at line 1
+mysql> insert into worker values(1,'rahul','dev',40000),(2,'bhai','tester',50000),(3,'rohit','d-manager',55000),(4,'anjali','tester',62000),(5,'tom','t-manager',70000);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from werker;
+ERROR 1146 (42S02): Table 'shreya.werker' doesn't exist
+mysql> select * from worker;
++----+--------+-------------+--------+
+| id | name   | designation | salary |
++----+--------+-------------+--------+
+|  1 | rahul  | dev         |  40000 |
+|  2 | bhai   | tester      |  50000 |
+|  3 | rohit  | d-manager   |  55000 |
+|  4 | anjali | tester      |  62000 |
+|  5 | tom    | t-manager   |  70000 |
++----+--------+-------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from worker where salary == (select max(salary) from worker)
+;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '== (select max(salary) from worker)' at line 1
+mysql> select * from worker where salary = (select max(salary) from worker);
+
++----+------+-------------+--------+
+| id | name | designation | salary |
++----+------+-------------+--------+
+|  5 | tom  | t-manager   |  70000 |
++----+------+-------------+--------+
+1 row in set (0.01 sec)
+
+mysql> select * from worker where salary = (select max(salary) from worker where salary <(select max(salary) from worker);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> select * from worker where salary = (select max(salary) from worker where salary <(select max(salary) from worker));
++----+--------+-------------+--------+
+| id | name   | designation | salary |
++----+--------+-------------+--------+
+|  4 | anjali | tester      |  62000 |
++----+--------+-------------+--------+
+1 row in set (0.01 sec)
+
+mysql> select * from worker where salary > any(select max(salary) from worke
+r where salary >(select avg(salary) from worker));
+Empty set (0.01 sec)
+
+mysql> select avg(salary) from worker;
++-------------+
+| avg(salary) |
++-------------+
+|  55400.0000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from worker where salary > any(select max(salary) from worker where salary <(select avg(salary) from worker));
++----+--------+-------------+--------+
+| id | name   | designation | salary |
++----+--------+-------------+--------+
+|  4 | anjali | tester      |  62000 |
+|  5 | tom    | t-manager   |  70000 |
++----+--------+-------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from worker where salary > any(select max(salary) from worker where salary <(select avg(salary) from worker));
++----+--------+-------------+--------+
+| id | name   | designation | salary |
++----+--------+-------------+--------+
+|  4 | anjali | tester      |  62000 |
+|  5 | tom    | t-manager   |  70000 |
++----+--------+-------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from worker where salary > any(62000,70000);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '62000,70000)' at line 1
+mysql> select * from worker where salary > any(select max(salary) from worker where salary >(select avg(salary) from worker));
+Empty set (0.00 sec)
+
+mysql> select * from worker where salary > any(select max(salary) from worker where salary <(select avg(salary) from worker));
++----+--------+-------------+--------+
+| id | name   | designation | salary |
++----+--------+-------------+--------+
+|  4 | anjali | tester      |  62000 |
+|  5 | tom    | t-manager   |  70000 |
++----+--------+-------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from worker where salary < any(select min(salary) from worke
+r where salary >(select avg(salary) from worker));
++----+-------+-------------+--------+
+| id | name  | designation | salary |
++----+-------+-------------+--------+
+|  1 | rahul | dev         |  40000 |
+|  2 | bhai  | tester      |  50000 |
+|  3 | rohit | d-manager   |  55000 |
++----+-------+-------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select * from worker where salary = (select min(salary) from worker w
+here salary >(select min(salary) from worker));
++----+------+-------------+--------+
+| id | name | designation | salary |
++----+------+-------------+--------+
+|  2 | bhai | tester      |  50000 |
++----+------+-------------+--------+
+1 row in set (0.00 sec)
+
+mysql> create table one(id int,value int,character varchar(20));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'character varchar(20))' at line 1
+mysql> create table one(id int,value int,letters varchar(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table two(id int,value int,letters varchar(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc atble one;
+ERROR 1146 (42S02): Table 'shreya.atble' doesn't exist
+mysql> desc table one;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | one   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> desc table two;
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | two   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> insert into one values(1,100,
+    -> 'shreya');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into one values(2,200,'swyam');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into one values(3,300,'payal');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into two values(1,100,'shreya');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into two values(2,200,'swyam');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into two values(3,300,'payal');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> selec t* from one;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'selec t* from one' at line 1
+mysql> select * from one;
++------+-------+---------+
+| id   | value | letters |
++------+-------+---------+
+|    1 |   100 | shreya  |
+|    2 |   200 | swyam   |
+|    3 |   300 | payal   |
++------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from tow;
+ERROR 1146 (42S02): Table 'shreya.tow' doesn't exist
+mysql> select * from two;
++------+-------+---------+
+| id   | value | letters |
++------+-------+---------+
+|    1 |   100 | shreya  |
+|    2 |   200 | swyam   |
+|    3 |   300 | payal   |
++------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from one
+    -> union
+    -> select 8 from two;
+ERROR 1222 (21000): The used SELECT statements have a different number of columns
+mysql> select * from one
+    -> union
+    -> select * from two;
++------+-------+---------+
+| id   | value | letters |
++------+-------+---------+
+|    1 |   100 | shreya  |
+|    2 |   200 | swyam   |
+|    3 |   300 | payal   |
++------+-------+---------+
+3 rows in set (0.01 sec)
+
+mysql> selecgt * from one
+    -> intersect
+    -> selecgt * from one;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'selecgt * from one
+intersect
+selecgt * from one' at line 1
+mysql> select * from one
+    -> intersect
+    -> select * from two;
++------+-------+---------+
+| id   | value | letters |
++------+-------+---------+
+|    1 |   100 | shreya  |
+|    2 |   200 | swyam   |
+|    3 |   300 | payal   |
++------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select count(salary) from worker group by salary;
++---------------+
+| count(salary) |
++---------------+
+|             1 |
+|             1 |
+|             1 |
+|             1 |
+|             1 |
++---------------+
+5 rows in set (0.01 sec)
+
+mysql> select count(salary), salary from worker group by salary;
++---------------+--------+
+| count(salary) | salary |
++---------------+--------+
+|             1 |  40000 |
+|             1 |  50000 |
+|             1 |  55000 |
+|             1 |  62000 |
+|             1 |  70000 |
++---------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from one intersect select * from two;
++------+-------+---------+
+| id   | value | letters |
++------+-------+---------+
+|    1 |   100 | shreya  |
+|    2 |   200 | swyam   |
+|    3 |   300 | payal   |
++------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from one union select * from two;
++------+-------+---------+
+| id   | value | letters |
++------+-------+---------+
+|    1 |   100 | shreya  |
+|    2 |   200 | swyam   |
+|    3 |   300 | payal   |
++------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from one except select * from two;
+Empty set (0.00 sec)
